@@ -7,15 +7,22 @@ class SentinelGuard {
         
         // Enhanced keyword dictionaries with context awareness
         this.keywords = {
-            toxic: ['idiot', 'stupid', 'stuppid', 'dumb', 'moron', 'pathetic', 'worthless', 'asshole', 'fucking', 'shit', 'damn'],
-            negative: ['bad', 'terrible', 'awful', 'horrible', 'worst', 'suck', 'fail', 'wrong', 'annoying', 'dislike', 'hate', 'sad', 'upset', 'angry', 'pointless'],
-            positive: ['good', 'great', 'awesome', 'amazing', 'excellent', 'wonderful', 'fantastic', 'love', 'best', 'happy', 'nice', 'killer', 'kill this', 'so bad it was good']
+            toxic: ['idiot', 'stupid', 'stuppid', 'dumb', 'moron', 'pathetic', 'worthless', 'asshole', 'fucking', 'shit', 'damn', 'violent', 'cruel', 'mean', 'nasty', 'rude', 'disrespectful'],
+            negative: ['bad', 'terrible', 'awful', 'horrible', 'worst', 'suck', 'fail', 'wrong', 'annoying', 'dislike', 'hate', 'sad', 'upset', 'angry', 'pointless', 'sarcasm', 'sarcastic', 'ironic', 'mocking', 'ridiculous', 'absurd', 'pathetic', 'lame', 'boring', 'useless', 'whatever', 'seriously', 'obviously', 'clearly', 'sure thing', 'yeah right', 'oh great', 'fantastic', 'wonderful', 'perfect', 'brilliant', 'genius', 'depressed', 'irritated', 'frustrated', 'resentful', 'anxious', 'nervous', 'worried', 'guilty', 'regretful', 'lonely', 'isolated', 'jealous', 'envious', 'sorrow', 'sorrowful', 'grief', 'grieving', 'mourning', 'heartbroken', 'devastated', 'insecure', 'insecurity', 'doubtful', 'uncertain', 'fearful', 'scared', 'afraid', 'terrified', 'panicked', 'overwhelmed', 'stressed', 'exhausted', 'drained', 'hopeless', 'helpless', 'powerless', 'worthless', 'ashamed', 'embarrassed', 'humiliated', 'rejected', 'abandoned', 'betrayed', 'disappointed', 'discouraged', 'defeated', 'broken', 'empty', 'numb', 'lost', 'confused', 'troubled', 'disturbed', 'miserable', 'wretched', 'gloomy', 'melancholy', 'despondent', 'despairing', 'bitter', 'resentful', 'vengeful', 'hostile', 'aggressive', 'violent', 'cruel', 'mean', 'nasty', 'rude', 'disrespectful'],
+            positive: ['good', 'great', 'awesome', 'amazing', 'excellent', 'wonderful', 'fantastic', 'love', 'best', 'happy', 'nice', 'killer', 'kill this', 'so bad it was good', 'jovial', 'cheerful', 'upbeat', 'lighthearted', 'buoyant', 'spirited', 'joyful', 'excited', 'enthusiastic', 'energized', 'eager', 'relaxed', 'calm', 'peaceful', 'optimistic', 'hopeful', 'grateful', 'content', 'satisfied', 'thankful', 'affectionate', 'loving', 'friendly', 'playful', 'sociable'],
+            neutral: ['bored', 'indifferent', 'confused', 'uncertain', 'unsure', 'conflicted', 'indecisive', 'curious', 'inquisitive', 'reflective', 'thoughtful', 'contemplative', 'introspective', 'nostalgic']
         };
         
         // Critical negative contexts that override positive keywords
         this.criticalNegativeContexts = [
             'suicide', 'kill myself', 'end my life', 'want to die', 'love to suicide', 'love suicide',
             'self harm', 'hurt myself', 'cut myself', 'overdose', 'jump off'
+        ];
+        
+        // Sarcastic phrases that indicate negative sentiment
+        this.sarcasticPhrases = [
+            'oh great', 'yeah right', 'sure thing', 'how wonderful', 'just perfect', 'absolutely brilliant',
+            'oh fantastic', 'really helpful', 'so exciting', 'cant wait', 'love that', 'just what i needed'
         ];
         
         // Context-aware positive phrases that override negative keywords
@@ -42,7 +49,63 @@ class SentinelGuard {
             'fucking': ['very', 'extremely', 'really'],
             'shit': ['poor', 'bad', 'subpar'],
             'damn': ['very', 'quite', 'really'],
-            'pointless': ['futile', 'unnecessary', 'ineffective']
+            'pointless': ['futile', 'unnecessary', 'ineffective'],
+            'self-harm content': ['seek support', 'talk to someone', 'get help'],
+            'sarcastic': ['direct', 'straightforward', 'honest'],
+            'ridiculous': ['unusual', 'different', 'unique'],
+            'lame': ['simple', 'basic', 'straightforward'],
+            'useless': ['limited', 'basic', 'simple'],
+            'whatever': ['okay', 'fine', 'alright'],
+            'depressed': ['feeling down', 'need support', 'could use help'],
+            'frustrated': ['challenged', 'working through', 'processing'],
+            'anxious': ['concerned', 'thoughtful', 'careful'],
+            'lonely': ['seeking connection', 'wanting company', 'looking for friends'],
+            'jealous': ['admiring', 'inspired by', 'motivated by'],
+            'aggressive': ['assertive', 'direct', 'focused'],
+            'sorrow': ['sadness', 'reflection', 'processing emotions'],
+            'grief': ['mourning', 'remembering', 'healing'],
+            'heartbroken': ['deeply hurt', 'processing loss', 'healing'],
+            'insecure': ['uncertain', 'cautious', 'thoughtful'],
+            'scared': ['careful', 'cautious', 'alert'],
+            'overwhelmed': ['busy', 'handling much', 'working through'],
+            'hopeless': ['challenged', 'seeking solutions', 'working through'],
+            'ashamed': ['learning', 'growing', 'reflecting'],
+            'rejected': ['redirected', 'finding new paths', 'exploring options'],
+            'disappointed': ['surprised', 'learning', 'adjusting expectations'],
+            'broken': ['healing', 'rebuilding', 'growing stronger'],
+            'lost': ['exploring', 'finding direction', 'discovering'],
+            'miserable': ['struggling', 'working through challenges', 'seeking improvement']
+        };
+        
+        // Positive alternatives for critical negative contexts
+        this.criticalReplacements = {
+            'suicide': 'seek support',
+            'kill myself': 'talk to someone',
+            'end my life': 'find help',
+            'want to die': 'need support',
+            'love to suicide': 'love to find peace',
+            'love suicide': 'love getting help',
+            'self harm': 'self care',
+            'hurt myself': 'help myself',
+            'cut myself': 'care for myself',
+            'oh great': 'thats interesting',
+            'yeah right': 'i see',
+            'sure thing': 'understood',
+            'just perfect': 'thats fine',
+            'really helpful': 'thanks for that',
+            'sorrow': 'finding peace',
+            'grief': 'healing process',
+            'heartbroken': 'finding strength',
+            'insecure': 'building confidence',
+            'scared': 'being brave',
+            'overwhelmed': 'taking it step by step',
+            'hopeless': 'finding hope',
+            'ashamed': 'learning and growing',
+            'rejected': 'finding new opportunities',
+            'disappointed': 'staying optimistic',
+            'broken': 'becoming stronger',
+            'lost': 'finding my way',
+            'miserable': 'seeking happiness'
         };
     }
 
@@ -170,7 +233,19 @@ class SentinelGuard {
         );
         
         if (hasCriticalNegativeContext) {
-            return { sentiment: 'toxic', confidence: 0.95, toxicWords: ['self-harm content'] };
+            const detectedContext = this.criticalNegativeContexts.find(context => 
+                lowerMessage.includes(context)
+            );
+            return { sentiment: 'toxic', confidence: 0.95, toxicWords: [detectedContext] };
+        }
+        
+        // Check for sarcastic phrases (indicates negative sentiment)
+        const hasSarcasticPhrase = this.sarcasticPhrases.some(phrase => 
+            lowerMessage.includes(phrase)
+        );
+        
+        if (hasSarcasticPhrase) {
+            return { sentiment: 'negative', confidence: 0.85, toxicWords: [] };
         }
         
         // Check for positive contexts (overrides negative keywords)
@@ -218,14 +293,30 @@ class SentinelGuard {
                 if (neg === 'bad' && lowerMessage.includes('so bad it was good')) {
                     return;
                 }
+                // Skip positive uses of words like 'brilliant', 'fantastic' when genuinely positive
+                if (['brilliant', 'fantastic', 'wonderful', 'perfect'].includes(neg) && 
+                    !this.sarcasticPhrases.some(phrase => lowerMessage.includes(phrase))) {
+                    return;
+                }
                 negativeCount++;
             }
         });
+        
+        // Check for neutral words
+        let neutralCount = 0;
+        this.keywords.neutral.forEach(neutral => {
+            if (lowerMessage.includes(neutral)) {
+                neutralCount++;
+            }
+        });
 
-        // Check for positive words
+        // Check for positive words (but not if they're in sarcastic context)
         this.keywords.positive.forEach(pos => {
             if (lowerMessage.includes(pos)) {
-                positiveCount++;
+                // Don't count as positive if it's part of a sarcastic phrase
+                if (!hasSarcasticPhrase) {
+                    positiveCount++;
+                }
             }
         });
 
@@ -233,12 +324,15 @@ class SentinelGuard {
         if (toxicWords.length > 0) {
             sentiment = 'toxic';
             confidence = 0.9;
+        } else if (hasSarcasticPhrase || negativeCount > positiveCount) {
+            sentiment = 'negative';
+            confidence = hasSarcasticPhrase ? 0.85 : 0.8;
         } else if (positiveCount > negativeCount) {
             sentiment = 'positive';
             confidence = 0.8;
-        } else if (negativeCount > positiveCount) {
-            sentiment = 'negative';
-            confidence = 0.8;
+        } else if (neutralCount > 0) {
+            sentiment = 'neutral';
+            confidence = 0.7;
         } else {
             sentiment = 'neutral';
             confidence = 0.6;
@@ -380,7 +474,12 @@ class SentinelGuard {
     async findReplacement(word) {
         const lowerWord = word.toLowerCase();
         
-        // Check local replacement dictionary first
+        // Check critical replacements first
+        if (this.criticalReplacements[lowerWord]) {
+            return this.criticalReplacements[lowerWord];
+        }
+        
+        // Check local replacement dictionary
         if (this.replacements[lowerWord]) {
             const options = this.replacements[lowerWord];
             return options[Math.floor(Math.random() * options.length)];
