@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelGuard - Constructive Chat Moderation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ SentinelGuard</h1>
+            <p>Proactive & Constructive Chat Moderation</p>
+        </header>
+
+        <div class="chat-section">
+            <div class="live-preview">
+                <h3>Live Preview</h3>
+                <div id="preview-card" class="preview-card neutral">
+                    <div class="sentiment-indicator">
+                        <span id="sentiment-emoji">😐</span>
+                        <span id="sentiment-text">Neutral</span>
+                    </div>
+                    <div id="preview-message">Start typing to see live analysis...</div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <textarea 
+                    id="message-input" 
+                    placeholder="Type your message here (max 150 characters)..."
+                    maxlength="150"
+                ></textarea>
+                <div id="suggestion-box" class="suggestion-box" style="display: none;">
+                    <div class="suggestion-header">💡 Suggested improvement:</div>
+                    <div id="suggested-text" class="suggested-text"></div>
+                    <button id="use-suggestion-btn" class="use-suggestion-btn">Use This Version</button>
+                </div>
+                <div class="input-footer">
+                    <span id="char-count">0/150</span>
+                    <button id="send-btn" disabled>Send Message</button>
+                </div>
+            </div>
+
+            <div class="chat-display">
+                <h3>Chat Messages</h3>
+                <div id="chat-messages"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Modal -->
+    <div id="warning-modal" class="modal">
+        <div class="modal-content">
+            <h3>⚠️ Message Moderation Notice</h3>
+            <p id="warning-text"></p>
+            <div class="modal-actions">
+                <button id="understand-btn">I Understand</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading" class="loading">Analyzing message...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/toxicity"></script>
+    <script src="script.js"></script>
+</body>
+</html>
