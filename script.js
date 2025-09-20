@@ -12,6 +12,12 @@ class SentinelGuard {
             positive: ['good', 'great', 'awesome', 'amazing', 'excellent', 'wonderful', 'fantastic', 'love', 'best', 'happy', 'nice', 'killer', 'kill this', 'so bad it was good']
         };
         
+        // Critical negative contexts that override positive keywords
+        this.criticalNegativeContexts = [
+            'suicide', 'kill myself', 'end my life', 'want to die', 'love to suicide', 'love suicide',
+            'self harm', 'hurt myself', 'cut myself', 'overdose', 'jump off'
+        ];
+        
         // Context-aware positive phrases that override negative keywords
         this.positiveContexts = [
             'so bad it was good', 'bad it was good', 'killer guitarist', 'killer musician', 'killer performance',
@@ -158,7 +164,16 @@ class SentinelGuard {
     ruleBasedAnalysis(message) {
         const lowerMessage = message.toLowerCase();
         
-        // Check for positive contexts first (overrides negative keywords)
+        // Check for critical negative contexts first (highest priority)
+        const hasCriticalNegativeContext = this.criticalNegativeContexts.some(context => 
+            lowerMessage.includes(context)
+        );
+        
+        if (hasCriticalNegativeContext) {
+            return { sentiment: 'toxic', confidence: 0.95, toxicWords: ['self-harm content'] };
+        }
+        
+        // Check for positive contexts (overrides negative keywords)
         const hasPositiveContext = this.positiveContexts.some(context => 
             lowerMessage.includes(context)
         );
